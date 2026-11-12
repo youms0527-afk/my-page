@@ -1,1 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유민서의 8비트 레트로 오락실</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 8비트 레트로 폰트 (Press Start 2P & NeoDunggeunmo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DungGeunMo&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 레트로 스타일 설정 */
+        body {
+            font-family: 'DungGeunMo', monospace;
+            background-color: #0d0814;
+            color: #33ff66;
+            background-image: 
+                radial-gradient(#1a102f 15%, transparent 16%),
+                radial-gradient(#1a102f 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
 
+        .pixel-font-en {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* 픽셀 테두리 Box Shadow 스타일 */
+        .pixel-box {
+            border: 4px solid #fff;
+            box-shadow: 
+                -4px 0 0 0 #000,
+                 4px 0 0 0 #000,
+                 0 -4px 0 0 #000,
+                 0  4px 0 0 #000,
+                 0 0 0 4px #ff0055;
+        }
+
+        .pixel-btn {
+            position: relative;
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            color: #fff;
+            background-color: #ff0055;
+            border: none;
+            box-shadow: -4px 0 #000, 4px 0 #000, 0 -4px #000, 0 4px #000, inset -4px -4px #990033;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000, inset -2px -2px #990033;
+        }
+
+        .pixel-btn-green {
+            background-color: #00cc44;
+            box-shadow: -4px 0 #000, 4px 0 #000, 0 -4px #000, 0 4px #000, inset -4px -4px #006622;
+        }
+
+        .pixel-btn-yellow {
+            background-color: #ffcc00;
+            color: #000;
+            box-shadow: -4px 0 #000, 4px 0 #000, 0 -4px #000, 0 4px #000, inset -4px -4px #997700;
+        }
+
+        /* 카드 뒤집기 애니메이션 관련 스타일 */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #22123b;
+            border: 3px solid #00ffff;
+        }
+
+        /* 스파클 반짝이 이펙트 CSS */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ff00ff;
+            box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+            animation: fadeOut 0.8s forwards linear;
+            z-index: 9999;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(1) translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.2) translate(var(--tw-x, 0px), var(--tw-y, 0px));
+            }
+        }
+
+        /* CRT 화면 네온 글로우 효과 */
+        .glow-text {
+            text-shadow: 0 0 8px #ff00ff, 0 0 15px #ff00ff;
+        }
+
+        .glow-green {
+            text-shadow: 0 0 8px #33ff66, 0 0 15px #33ff66;
+        }
+
+        /* blinking 애니메이션 */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 flex flex-col items-center justify-start relative">
+
+    <!-- Header Section -->
+    <header class="w-full text-center py-8 px-4 border-b-4 border-pink-500 bg-black/50 backdrop-blur-sm mb-8">
+        <div class="inline-block bg-yellow-400 text-black px-3 py-1 text-xs font-bold mb-2 uppercase tracking-widest rounded-sm">
+            STAGE 1 - PROFILE
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold text-pink-500 glow-text mb-2 pixel-font-en break-keep">
+            USER: <span class="text-yellow-300">유민서</span>
+        </h1>
+        <p class="text-cyan-300 text-base sm:text-lg glow-green mt-2">
+            ★ 8비트 세상에 오신 것을 환영합니다! ★
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full px-4 flex flex-col gap-12">
+
+        <!-- SECTION 1: 좋아하는 것 3가지 (카드 뒤집기) -->
+        <section class="bg-purple-950/40 p-6 rounded-lg border-2 border-purple-500">
+            <h2 class="text-xl sm:text-2xl text-yellow-300 mb-2 flex items-center gap-2">
+                <span>🎮</span> 내가 좋아하는 3가지 (클릭해서 뒤집기!)
+            </h2>
+            <p class="text-gray-300 text-sm mb-6">카드를 터치하거나 클릭하여 숨겨진 비밀 이유를 확인하세요.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 perspective-1000">
+                
+                <!-- CARD 1: 게임 -->
+                <div class="card h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner">
+                        <!-- 앞면 -->
+                        <div class="card-front bg-gray-900 border-4 border-pink-500 flex flex-col justify-center items-center text-center">
+                            <div class="text-5xl mb-4">🕹️</div>
+                            <h3 class="text-xl font-bold text-pink-400">1. 게임</h3>
+                            <span class="text-xs text-cyan-400 mt-4 blink">CLICK TO FLIP!</span>
+                        </div>
+                        <!-- 뒷면 -->
+                        <div class="card-back flex flex-col justify-center items-center text-center">
+                            <h4 class="text-lg font-bold text-yellow-300 mb-2">좋아하는 이유!</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed">
+                                현실 세계는 퀘스트 보상이 짠데, 게임 속 세상은 몬스터만 잡으면 아이템과 돈을 팍팍 주기 때문이지! 🏆
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: 릴스 -->
+                <div class="card h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner">
+                        <!-- 앞면 -->
+                        <div class="card-front bg-gray-900 border-4 border-yellow-400 flex flex-col justify-center items-center text-center">
+                            <div class="text-5xl mb-4">📱</div>
+                            <h3 class="text-xl font-bold text-yellow-400">2. 릴스</h3>
+                            <span class="text-xs text-cyan-400 mt-4 blink">CLICK TO FLIP!</span>
+                        </div>
+                        <!-- 뒷면 -->
+                        <div class="card-back flex flex-col justify-center items-center text-center">
+                            <h4 class="text-lg font-bold text-yellow-300 mb-2">좋아하는 이유!</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed">
+                                딱 5분만 보려고 켰는데 눈감았다 뜨면 2시간이 지나있는 마법의 시간여행 도구이기 때문! ⌛
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: 민기 괴롭히기 -->
+                <div class="card h-64 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner">
+                        <!-- 앞면 -->
+                        <div class="card-front bg-gray-900 border-4 border-cyan-400 flex flex-col justify-center items-center text-center">
+                            <div class="text-5xl mb-4">😜</div>
+                            <h3 class="text-xl font-bold text-cyan-400">3. 민기 괴롭히기</h3>
+                            <span class="text-xs text-cyan-400 mt-4 blink">CLICK TO FLIP!</span>
+                        </div>
+                        <!-- 뒷면 -->
+                        <div class="card-back flex flex-col justify-center items-center text-center">
+                            <h4 class="text-lg font-bold text-yellow-300 mb-2">좋아하는 이유!</h4>
+                            <p class="text-sm text-gray-200 leading-relaxed">
+                                민기의 억울해하는 반응이 세상에서 제일 찰지고 재밌음! 나의 삶의 활력소 그 자체 😈
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: OX 퀴즈 -->
+        <section class="bg-gray-900/80 p-6 rounded-lg border-2 border-cyan-500 text-center relative overflow-hidden">
+            <h2 class="text-xl sm:text-2xl text-cyan-300 mb-4 flex justify-center items-center gap-2">
+                <span>❓</span> MINI GAME: OX QUIZ
+            </h2>
+            
+            <div class="bg-black/60 p-4 border border-cyan-800 rounded mb-6">
+                <p class="text-lg sm:text-xl text-white font-bold leading-relaxed">
+                    "나는 군대 가는 것을 선택할 수 있다"
+                </p>
+            </div>
+
+            <!-- OX 버튼 -->
+            <div class="flex justify-center gap-6 mb-4">
+                <button onclick="checkQuiz('O')" class="pixel-btn pixel-btn-green w-24 h-16 text-2xl font-black">
+                    O
+                </button>
+                <button onclick="checkQuiz('X')" class="pixel-btn w-24 h-16 text-2xl font-black">
+                    X
+                </button>
+            </div>
+
+            <!-- 결과 표시 창 -->
+            <div id="quiz-result" class="hidden mt-4 p-4 border-2 rounded text-lg font-bold"></div>
+        </section>
+
+
+        <!-- SECTION 3: "그런 거 없어" 랜덤 버튼 -->
+        <section class="bg-purple-950/40 p-6 rounded-lg border-2 border-pink-500 text-center">
+            <h2 class="text-xl sm:text-2xl text-pink-400 mb-2 flex justify-center items-center gap-2">
+                <span>🎁</span> 행운의 "그런 거 없어" 뽑기
+            </h2>
+            <p class="text-gray-300 text-sm mb-6">아래 버튼을 눌러 당신만을 위한 특별한 메시지를 확인하세요!</p>
+
+            <button onclick="getNoWayMessage()" class="pixel-btn pixel-btn-yellow text-lg py-3 px-6 mb-6">
+                🎲 버튼 누르기!!
+            </button>
+
+            <!-- 결과 박스 -->
+            <div id="noway-box" class="bg-black/80 border-2 border-yellow-400 p-6 rounded min-h-[100px] flex items-center justify-center">
+                <p id="noway-text" class="text-yellow-300 text-base sm:text-lg">
+                    버튼을 눌러서 메시지를 확인하세요!
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-xs text-gray-500">
+        <p>© 2026 USER: 유민서. ALL RIGHTS RESERVED.</p>
+        <p class="mt-1">GAME OVER - INSERT COIN TO PLAY AGAIN</p>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        /* 1. 카드 뒤집기 기능 */
+        function flipCard(cardElement) {
+            cardElement.classList.toggle('flipped');
+        }
+
+        /* 2. OX 퀴즈 처리 기능 */
+        function checkQuiz(userAnswer) {
+            const resultBox = document.getElementById('quiz-result');
+            resultBox.classList.remove('hidden', 'border-green-500', 'bg-green-950/80', 'text-green-300', 'border-red-500', 'bg-red-950/80', 'text-red-300');
+
+            if (userAnswer === 'O') {
+                // 정답 (O)
+                resultBox.classList.add('border-green-500', 'bg-green-950/80', 'text-green-300');
+                resultBox.innerHTML = `
+                    <div class="text-2xl mb-1">🎉 정답입니다! 🎉</div>
+                    <p class="text-sm font-normal text-white">맞습니다! 갈 수 있는 선택권이 있죠! (언제 가느냐의 차이일 뿐...🔥)</p>
+                `;
+                createConfetti();
+            } else {
+                // 오답 (X)
+                resultBox.classList.add('border-red-500', 'bg-red-950/80', 'text-red-300');
+                resultBox.innerHTML = `
+                    <div class="text-2xl mb-1">💀 땡! 틀렸습니다! 💀</div>
+                    <p class="text-sm font-normal text-white">아쉽네요! 대한민국 청년이라면 누구나 선택할 수 있답니다! 😉</p>
+                `;
+            }
+        }
+
+        /* 축하 효과 (간단한 파티클 생성) */
+        function createConfetti() {
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'sparkle';
+                particle.style.left = (window.innerWidth / 2 + (Math.random() * 200 - 100)) + 'px';
+                particle.style.top = (window.scrollY + window.innerHeight / 2 + (Math.random() * 200 - 100)) + 'px';
+                particle.style.backgroundColor = ['#ff0055', '#00ffff', '#ffcc00', '#33ff66'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        /* 3. 랜덤 "그런 거 없어" 10가지 이상 리스트 */
+        const noWayList = [
+            "그런 거 없어, 돌아가.",
+            "혹시 기대했어? 그런 거 없어~!",
+            "비밀 당첨권? 응 그런 거 없어.",
+            "소원을 빌어보세요... 는 무슨, 그런 거 없어!",
+            "열심히 눌러봐도 그런 거 없어!",
+            "선물 상자를 열었습니다! [내용물: 그런 거 없어]",
+            "특별한 행운? 아쉽지만 그런 거 없어 😜",
+            "지갑을 열어보았다. 그런 거 없어.",
+            "버그인가? 아니, 원래 그런 거 없어!",
+            "민기에게 양보하세요. 그런 거 없으니까!",
+            "다음 기회에... 가 아니라 영원히 그런 거 없어!",
+            "히든 엔딩? 그런 거 없다니까?"
+        ];
+
+        let lastIndex = -1;
+
+        function getNoWayMessage() {
+            let randomIndex;
+            // 연속으로 같은 문장이 나오지 않도록 처리
+            do {
+                randomIndex = Math.floor(Math.random() * noWayList.length);
+            } while (randomIndex === lastIndex && noWayList.length > 1);
+            
+            lastIndex = randomIndex;
+
+            const textElement = document.getElementById('noway-text');
+            
+            // 효과음 느낌의 연출
+            textElement.style.opacity = '0';
+            setTimeout(() => {
+                textElement.innerText = `"${noWayList[randomIndex]}"`;
+                textElement.style.opacity = '1';
+            }, 100);
+        }
+
+        /* 4. 마우스를 따라다니는 반짝이 이펙트 */
+        let lastSparkleTime = 0;
+
+        function createSparkle(x, y) {
+            const now = Date.now();
+            // 반짝이 생성 빈도 조절 (30ms 마다)
+            if (now - lastSparkleTime < 30) return;
+            lastSparkleTime = now;
+
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            // 위치 설정
+            sparkle.style.left = `${x - 4}px`;
+            sparkle.style.top = `${y - 4}px`;
+
+            // 랜덤 날아가는 방향 설정
+            const moveX = (Math.random() - 0.5) * 40;
+            const moveY = (Math.random() - 0.5) * 40;
+            sparkle.style.setProperty('--tw-x', `${moveX}px`);
+            sparkle.style.setProperty('--tw-y', `${moveY}px`);
+
+            // 랜덤 색상
+            const colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0055', '#33ff66'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            sparkle.style.backgroundColor = randomColor;
+            sparkle.style.boxShadow = `0 0 8px ${randomColor}`;
+
+            document.body.appendChild(sparkle);
+
+            // 애니메이션 완료 후 삭제
+            setTimeout(() => {
+                sparkle.remove();
+            }, 800);
+        }
+
+        // 마우스 이동 및 터치 이벤트에 반응
+        window.addEventListener('mousemove', (e) => {
+            createSparkle(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                createSparkle(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+    </script>
+</body>
+</html>
