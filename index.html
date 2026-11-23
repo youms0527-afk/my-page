@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAYER 1: 유민서 - RETRO ARCADE PROFILE</title>
+    <!-- 레트로 감성을 위한 픽셀 폰트 로드 (둥근모꼴 & Press Start 2P) -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'DungGeunMo';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* =========================================
+           CSS 변수 및 테마 설정 (다크/라이트 모드)
+           ========================================= */
+        :root {
+            /* 기본값: 오락실 어두운 화면 (Dark Mode) */
+            --bg-color: #120d1d;
+            --panel-bg: #1e1633;
+            --text-color: #ffffff;
+            --text-muted: #b8a9d6;
+            --accent-primary: #ff2a85;   /* 네온 핑크 */
+            --accent-secondary: #00f0ff; /* 네온 시안 */
+            --accent-yellow: #ffe600;    /* 코인 옐로우 */
+            --accent-green: #00ff66;     /* 1UP 그린 */
+            --border-color: #ffffff;
+            --shadow-color: #000000;
+            --scanline-opacity: 0.15;
+            --grid-color: rgba(255, 42, 133, 0.15);
+        }
+
+        body.light-mode {
+            /* 밝은 화면 (GameBoy / Pastel Retro Mode) */
+            --bg-color: #f4f1de;
+            --panel-bg: #ffffff;
+            --text-color: #2b2d42;
+            --text-muted: #5c607a;
+            --accent-primary: #e63946;
+            --accent-secondary: #1d3557;
+            --accent-yellow: #f4a261;
+            --accent-green: #2a9d8f;
+            --border-color: #2b2d42;
+            --shadow-color: rgba(43, 45, 66, 0.3);
+            --scanline-opacity: 0.04;
+            --grid-color: rgba(29, 53, 87, 0.08);
+        }
+
+        /* =========================================
+           기본 리셋 및 전체 레이아웃
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* 게임 느낌을 위해 텍스트 드래그 방지 */
+        }
+
+        input {
+            user-select: auto; /* 입력창은 타이핑 가능하도록 허용 */
+        }
+
+        html {
+            font-size: 19px; /* 전체 기준 글자 크기 확대 */
+        }
+
+        body {
+            font-family: 'DungGeunMo', 'Press Start 2P', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* 레트로 그리드 배경 */
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 32px 32px;
+            padding: 16px;
+        }
+
+        /* 브라운관(CRT) 스캔라인 효과 */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, var(--scanline-opacity)) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            padding-bottom: 40px;
+        }
+
+        /* =========================================
+           8비트 픽셀 박스 & 버튼 공통 스타일
+           ========================================= */
+        .pixel-box {
+            background-color: var(--panel-bg);
+            border: 4px solid var(--border-color);
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            padding: 24px;
+            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent-yellow);
+            text-shadow: 2px 2px 0px var(--shadow-color);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        body.light-mode .section-title {
+            color: var(--accent-primary);
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+        }
+
+        .pixel-btn {
+            font-family: 'DungGeunMo', 'Press Start 2P', monospace;
+            font-size: 1.15rem;
+            padding: 14px 22px;
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            border: 3px solid var(--border-color);
+            box-shadow: 4px 4px 0px var(--shadow-color);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pixel-btn:hover {
+            filter: brightness(1.1);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--shadow-color);
+        }
+
+        .pixel-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--shadow-color);
+        }
+
+        .pixel-btn.secondary {
+            background-color: var(--accent-secondary);
+            color: #120d1d;
+        }
+
+        body.light-mode .pixel-btn.secondary {
+            color: #ffffff;
+        }
+
+        .pixel-btn.yellow {
+            background-color: var(--accent-yellow);
+            color: #120d1d;
+        }
+
+        /* =========================================
+           상단 상태바 (HUD) & 테마 스위치
+           ========================================= */
+        .hud-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 18px;
+            background-color: var(--panel-bg);
+            border: 4px solid var(--border-color);
+            box-shadow: 4px 4px 0px var(--shadow-color);
+            font-size: 1.1rem;
+        }
+
+        .hud-stats {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .blink {
+            animation: blinker 1s steps(2, start) infinite;
+            color: var(--accent-green);
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        /* =========================================
+           히어로 배너 (캐릭터 소개)
+           ========================================= */
+        .hero-section {
+            text-align: center;
+            padding: 32px 20px;
+        }
+
+        .pixel-avatar {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 16px;
+            animation: floatAvatar 2s ease-in-out infinite;
+        }
+
+        @keyframes floatAvatar {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background-color: var(--accent-secondary);
+            color: #120d1d;
+            padding: 6px 14px;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            margin-bottom: 14px;
+        }
+
+        body.light-mode .hero-badge {
+            color: #ffffff;
+        }
+
+        .hero-title {
+            font-size: 2.6rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0px var(--accent-primary);
+            letter-spacing: 2px;
+        }
+
+        body.light-mode .hero-title {
+            text-shadow: 2px 2px 0px var(--accent-yellow);
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        /* =========================================
+           방문자 환영 인사 칸
+           ========================================= */
+        .visitor-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pixel-input {
+            flex: 1;
+            min-width: 200px;
+            font-family: 'DungGeunMo', monospace;
+            font-size: 1.15rem;
+            padding: 14px 16px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 3px solid var(--border-color);
+            outline: none;
+        }
+
+        .pixel-input:focus {
+            border-color: var(--accent-yellow);
+        }
+
+        .welcome-message-box {
+            margin-top: 16px;
+            padding: 16px;
+            background-color: rgba(0, 255, 102, 0.12);
+            border: 2px dashed var(--accent-green);
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            display: none;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body.light-mode .welcome-message-box {
+            background-color: rgba(42, 157, 143, 0.15);
+            color: #1d3557;
+            border-color: #2a9d8f;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* =========================================
+           좋아하는 것 3가지 (플립 카드)
+           ========================================= */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 680px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 270px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border: 4px solid var(--border-color);
+            box-shadow: 5px 5px 0px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .flip-card-front {
+            background-color: var(--bg-color);
+        }
+
+        .flip-card-front:hover {
+            border-color: var(--accent-yellow);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--accent-secondary);
+            margin-bottom: 8px;
+        }
+
+        .card-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.08);
+            padding: 4px 10px;
+        }
+
+        .flip-card-back {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            transform: rotateY(180deg);
+            justify-content: space-between;
+        }
+
+        .card-back-header {
+            font-size: 0.95rem;
+            background-color: #000000;
+            color: var(--accent-yellow);
+            padding: 4px 10px;
+            width: 100%;
+        }
+
+        .card-reason {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            word-break: keep-all;
+        }
+
+        .card-back-footer {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* =========================================
+           OX 퀴즈 섹션
+           ========================================= */
+        .quiz-question {
+            font-size: 1.55rem;
+            text-align: center;
+            padding: 22px;
+            background-color: var(--bg-color);
+            border: 3px solid var(--border-color);
+            margin-bottom: 22px;
+            color: var(--accent-yellow);
+        }
+
+        body.light-mode .quiz-question {
+            color: var(--accent-secondary);
+        }
+
+        .quiz-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .ox-btn {
+            width: 130px;
+            height: 85px;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .ox-btn.btn-o {
+            background-color: #00b4d8;
+            color: #ffffff;
+        }
+
+        .ox-btn.btn-x {
+            background-color: #ef233c;
+            color: #ffffff;
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            padding: 18px;
+            text-align: center;
+            font-size: 1.25rem;
+            border: 3px solid var(--border-color);
+            display: none;
+        }
+
+        .quiz-result.correct {
+            background-color: rgba(0, 255, 102, 0.2);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        body.light-mode .quiz-result.correct {
+            color: #1b4332;
+            background-color: #d8f3dc;
+        }
+
+        .quiz-result.wrong {
+            background-color: rgba(239, 35, 60, 0.2);
+            border-color: #ef233c;
+            color: #ff758f;
+        }
+
+        body.light-mode .quiz-result.wrong {
+            color: #800f2f;
+            background-color: #ffccd5;
+        }
+
+        /* 화면 흔들림 애니메이션 (오답 시) */
+        @keyframes screenShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px) rotate(-1deg); }
+            40% { transform: translateX(10px) rotate(1deg); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        .shake-effect {
+            animation: screenShake 0.45s ease-in-out;
+        }
+
+        /* =========================================
+           랜덤 응원 한마디 뽑기 (가챠 머신)
+           ========================================= */
+        .cheer-box {
+            text-align: center;
+        }
+
+        .cheer-display {
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            margin-bottom: 20px;
+            background-color: var(--bg-color);
+            border: 3px dashed var(--accent-secondary);
+            font-size: 1.3rem;
+            word-break: keep-all;
+            position: relative;
+        }
+
+        .cheer-counter {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 14px;
+        }
+
+        /* =========================================
+           마우스 따라다니는 반짝이 & 파티클 효과
+           ========================================= */
+        .sparkle-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 20px;
+            animation: sparkleFade 0.8s forwards ease-out;
+        }
+
+        @keyframes sparkleFade {
+            0% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -120%) scale(0.2) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        /* 축하 폭죽 파티클 */
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* 모바일 대응 미세 조정 */
+        @media (max-width: 480px) {
+            html { font-size: 17px; }
+            .hero-title { font-size: 1.9rem; }
+            .section-title { font-size: 1.25rem; }
+            .pixel-box { padding: 18px; }
+            .ox-btn { width: 110px; height: 75px; font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        
+        <!-- 1. 상단 오락실 상태바 (HUD) -->
+        <header class="hud-bar">
+            <div class="hud-stats">
+                <span>1UP: <strong>유민서</strong></span>
+                <span class="blink">INSERT COIN</span>
+                <span>SCORE: <strong id="scoreDisplay">0000</strong></span>
+            </div>
+            <button id="themeToggleBtn" class="pixel-btn secondary" aria-label="화면 테마 변경">
+                ☀️ 밝은 화면
+            </button>
+        </header>
+
+        <!-- 2. 메인 캐릭터 소개 배너 -->
+        <section class="pixel-box hero-section">
+            <!-- 8비트 픽셀 캐릭터 SVG (원숭이/게이머 감성 픽셀 아트) -->
+            <div class="pixel-avatar">
+                <svg viewBox="0 0 16 16" width="100%" height="100%" shape-rendering="crispEdges">
+                    <!-- 배경 후광 -->
+                    <rect x="4" y="1" width="8" height="1" fill="#ffe600"/>
+                    <rect x="3" y="2" width="10" height="1" fill="#ffe600"/>
+                    <!-- 머리카락 / 모자 -->
+                    <rect x="4" y="3" width="8" height="2" fill="#ff2a85"/>
+                    <rect x="3" y="4" width="10" height="1" fill="#ff2a85"/>
+                    <!-- 귀 -->
+                    <rect x="2" y="6" width="2" height="3" fill="#d48c46"/>
+                    <rect x="12" y="6" width="2" height="3" fill="#d48c46"/>
+                    <!-- 얼굴 윤곽 -->
+                    <rect x="4" y="5" width="8" height="6" fill="#8d5524"/>
+                    <!-- 얼굴 안쪽 피부 -->
+                    <rect x="5" y="6" width="6" height="4" fill="#ffdbac"/>
+                    <!-- 선글라스 (레트로 힙스터) -->
+                    <rect x="4" y="6" width="8" height="2" fill="#111111"/>
+                    <rect x="5" y="6" width="2" height="1" fill="#00f0ff"/>
+                    <rect x="9" y="6" width="2" height="1" fill="#00f0ff"/>
+                    <!-- 입 (씨익 웃는 표정) -->
+                    <rect x="6" y="9" width="4" height="1" fill="#111111"/>
+                    <rect x="9" y="8" width="1" height="1" fill="#111111"/>
+                    <!-- 몸통 (게임기 티셔츠) -->
+                    <rect x="4" y="11" width="8" height="4" fill="#00f0ff"/>
+                    <rect x="6" y="12" width="4" height="2" fill="#ff2a85"/>
+                </svg>
+            </div>
+
+            <div class="hero-badge">LV.99 장난꾸러기 게이머</div>
+            <h1 class="hero-title">HELLO, I'M 유민서!</h1>
+            <p class="hero-subtitle">오늘도 홍균 & 민기를 찾아 헤매는 8비트 오락실의 지배자</p>
+        </section>
+
+        <!-- 3. 방문자 환영 인사 칸 -->
+        <section class="pixel-box">
+            <h2 class="section-title">👾 PLAYER 2 등록 (방문자 방명록)</h2>
+            <div class="visitor-form">
+                <input 
+                    type="text" 
+                    id="visitorNameInput" 
+                    class="pixel-input" 
+                    placeholder="너의 닉네임을 입력해 줘!" 
+                    maxlength="15"
+                >
+                <button id="welcomeBtn" class="pixel-btn yellow">입장하기 ▶</button>
+            </div>
+            <div id="welcomeOutput" class="welcome-message-box"></div>
+        </section>
+
+        <!-- 4. 좋아하는 것 3가지 (클릭 시 뒤집히는 카드) -->
+        <section class="pixel-box">
+            <h2 class="section-title">❤️ 유민서가 좋아하는 것 TOP 3</h2>
+            <p style="margin-bottom: 16px; font-size: 0.9rem; color: var(--text-muted);">
+                ※ 카드를 터치하거나 클릭하면 뒤집히면서 진짜 이유가 공개됩니다!
+            </p>
+            
+            <div class="cards-grid">
+                <!-- 카드 1: 게임 -->
+                <div class="flip-card" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-icon">🕹️</div>
+                            <div class="card-title">1. 게임</div>
+                            <div class="card-hint">[ CLICK TO FLIP ]</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-back-header">SECRET REASON #1</div>
+                            <p class="card-reason">
+                                "현실 세계에서는 못 쓰는 필살기를 마음껏 쓸 수 있거든! 지면 렉 때문이고, 이기면 내 실력임. 반박 안 받음."
+                            </p>
+                            <div class="card-back-footer">▲ 다시 눌러서 닫기</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 카드 2: 홍균 -->
+                <div class="flip-card" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-icon">🦖</div>
+                            <div class="card-title">2. 홍균</div>
+                            <div class="card-hint">[ CLICK TO FLIP ]</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-back-header">SECRET REASON #2</div>
+                            <p class="card-reason">
+                                "존재 자체가 1일 1웃음 치트키! 같이 있으면 심심할 틈이 없어서 내 오락실 최고 단골 NPC로 임명함."
+                            </p>
+                            <div class="card-back-footer">▲ 다시 눌러서 닫기</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 카드 3: 민기 괴롭히기 -->
+                <div class="flip-card" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-icon">😈</div>
+                            <div class="card-title">3. 민기 괴롭히기</div>
+                            <div class="card-hint">[ CLICK TO FLIP ]</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-back-header">SECRET REASON #3</div>
+                            <p class="card-reason">
+                                "놀릴 때마다 타격감이 최고급 아케이드 스틱 수준임! 반응이 너무 찰져서 안 괴롭히면 손가락에 가시가 돋음."
+                            </p>
+                            <div class="card-back-footer">▲ 다시 눌러서 닫기</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. OX 퀴즈 -->
+        <section class="pixel-box">
+            <h2 class="section-title">❓ 돌발 보너스 스테이지: OX 퀴즈</h2>
+            <div class="quiz-question">
+                Q. "나는 우끼끼다" 🍌🐒
+            </div>
+            <div class="quiz-buttons">
+                <button class="pixel-btn ox-btn btn-o" onclick="checkQuiz('O')">O</button>
+                <button class="pixel-btn ox-btn btn-x" onclick="checkQuiz('X')">X</button>
+            </div>
+            <div id="quizResult" class="quiz-result"></div>
+        </section>
+
+        <!-- 6. 랜덤 응원 한마디 뽑기 -->
+        <section class="pixel-box cheer-box">
+            <h2 class="section-title" style="justify-content: center;">🍀 행운의 코인: 랜덤 응원 한마디</h2>
+            <div id="cheerDisplay" class="cheer-display">
+                버튼을 눌러 유민서가 보내는 응원 버프를 받아 가세요!
+            </div>
+            <button id="cheerBtn" class="pixel-btn">🎰 응원 뽑기 (FREE COIN)</button>
+            <div class="cheer-counter">지금까지 뽑은 응원 횟수: <span id="cheerCount">0</span>회</div>
+        </section>
+
+    </div>
+
+    <script>
+        /* =========================================
+           1. Web Audio API를 활용한 8비트 효과음 생성기
+           (외부 파일 없이 순수 JS로 레트로 사운드 구현)
+           ========================================= */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playBeep(freq, type, duration, delay = 0) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type; // 'square', 'triangle', 'sawtooth', 'sine'
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+                
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + delay);
+                osc.stop(audioCtx.currentTime + delay + duration);
+            } catch (e) {
+                // 브라우저 자동재생 정책 등으로 오디오 차단 시 무시
+            }
+        }
+
+        function playCoinSound() {
+            playBeep(987.77, 'square', 0.1, 0);      // B5
+            playBeep(1318.51, 'square', 0.25, 0.08); // E6
+        }
+
+        function playFlipSound() {
+            playBeep(523.25, 'triangle', 0.08, 0);
+            playBeep(783.99, 'triangle', 0.12, 0.06);
+        }
+
+        function playWinSound() {
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // 도 미 솔 높은도
+            notes.forEach((note, idx) => {
+                playBeep(note, 'square', 0.15, idx * 0.1);
+            });
+        }
+
+        function playLoseSound() {
+            playBeep(300, 'sawtooth', 0.2, 0);
+            playBeep(220, 'sawtooth', 0.35, 0.18);
+        }
+
+        /* =========================================
+           2. 상단 점수판(SCORE) 업데이트
+           ========================================= */
+        let currentScore = 0;
+        const scoreDisplay = document.getElementById('scoreDisplay');
+
+        function addScore(points) {
+            currentScore += points;
+            scoreDisplay.textContent = String(currentScore).padStart(4, '0');
+        }
+
+        /* =========================================
+           3. 밝은 화면 / 어두운 화면 전환 버튼
+           ========================================= */
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        let isLightMode = false;
+
+        themeToggleBtn.addEventListener('click', () => {
+            isLightMode = !isLightMode;
+            document.body.classList.toggle('light-mode', isLightMode);
+            themeToggleBtn.innerHTML = isLightMode ? '🌙 어두운 화면' : '☀️ 밝은 화면';
+            playBeep(660, 'square', 0.08);
+            addScore(10);
+        });
+
+        /* =========================================
+           4. 방문자 이름 입력 및 환영 인사
+           ========================================= */
+        const visitorNameInput = document.getElementById('visitorNameInput');
+        const welcomeBtn = document.getElementById('welcomeBtn');
+        const welcomeOutput = document.getElementById('welcomeOutput');
+
+        function showWelcomeMessage() {
+            const rawName = visitorNameInput.value.trim();
+            if (!rawName) {
+                welcomeOutput.style.display = 'block';
+                welcomeOutput.textContent = '⚠️ 닉네임을 먼저 입력해야 게임에 입장할 수 있어!';
+                playLoseSound();
+                return;
+            }
+
+            // XSS 방지를 위해 textContent 사용
+            welcomeOutput.style.display = 'block';
+            welcomeOutput.textContent = `🎉 환영해, [${rawName}]! 유민서의 8비트 아지트에 온 걸 격하게 반긴다! (보너스 +100점 획득!)`;
+            playCoinSound();
+            addScore(100);
+            createConfetti(25);
+        }
+
+        welcomeBtn.addEventListener('click', showWelcomeMessage);
+        visitorNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                showWelcomeMessage();
+            }
+        });
+
+        /* =========================================
+           5. 좋아하는 것 3가지 카드 뒤집기
+           ========================================= */
+        function flipCard(cardElement) {
+            cardElement.classList.toggle('flipped');
+            playFlipSound();
+            addScore(50);
+        }
+
+        /* =========================================
+           6. OX 퀴즈 ("나는 우끼끼다" -> 정답 O)
+           ========================================= */
+        const quizResult = document.getElementById('quizResult');
+        const mainContainer = document.getElementById('mainContainer');
+
+        function checkQuiz(answer) {
+            quizResult.style.display = 'block';
+            
+            if (answer === 'O') {
+                // 정답 축하 효과
+                quizResult.className = 'quiz-result correct';
+                quizResult.innerHTML = '🎊 정답입니다! 우끼끼끼!! 🍌🐒<br>역시 나를 제대로 알고 있군! (+500점)';
+                playWinSound();
+                addScore(500);
+                createConfetti(60);
+            } else {
+                // 오답 아쉬운 효과 (화면 흔들림 + 삐- 소리)
+                quizResult.className = 'quiz-result wrong';
+                quizResult.innerHTML = '💥 땡!! 틀렸습니다! 삐빅—!<br>힌트: 바나나를 아주 좋아하고 정글의 왕자임. 다시 눌러봐!';
+                playLoseSound();
+                
+                // 흔들림 애니메이션 재실행 트릭
+                mainContainer.classList.remove('shake-effect');
+                void mainContainer.offsetWidth; 
+                mainContainer.classList.add('shake-effect');
+            }
+        }
+
+        /* =========================================
+           7. 랜덤 응원 한마디 (12개 준비)
+           ========================================= */
+        const cheerMessages = [
+            "🌟 오늘 너의 하루는 무조건 대성공 각! 치트키 쓴 것처럼 술술 풀릴 거야!",
+            "🔥 포기하지 마! 최종 보스 앞에는 항상 세이브 포인트가 있는 법이지!",
+            "🍌 우끼끼 파워 주입 완료! 오늘 하루 텐션 200% 충전해 줄게!",
+            "🍀 네가 가는 길마다 황금 코인이  우수수 떨어지길 응원할게!",
+            "💪 지금 조금 힘들어도 괜찮아. 경험치 쌓여서 곧 레벨업할 타이밍이거든!",
+            "🎮 인생은 게임이야! 삐끗했으면 다시 스타트 버튼 누르면 그만이지!",
+            "✨ 넌 이미 충분히 멋진 플레이어야. 오늘도 너만의 필살기를 보여줘!",
+            "🚀 걱정 금지! 네 앞길을 막는 장애물은 내가 다 점프로 밟고 지나가 줄게!",
+            "🌈 비 온 뒤에 무지개 아이템이 뜨듯이, 너한테도 곧 좋은 일이 생길 거야!",
+            "🏆 오늘의 MVP는 바로 너! 자부심을 갖고 당당하게 걸어가자!",
+            "⚡ 배터리 방전 금지! 유민서표 초특급 에너지 포션 원샷하고 힘내!",
+            "🎉 웃으면 복이 온대! 오늘 민기 놀릴 때처럼 크게 한 번 웃어보자!"
+        ];
+
+        const cheerDisplay = document.getElementById('cheerDisplay');
+        const cheerBtn = document.getElementById('cheerBtn');
+        const cheerCountSpan = document.getElementById('cheerCount');
+        let cheerCount = 0;
+        let lastCheerIndex = -1;
+
+        cheerBtn.addEventListener('click', () => {
+            let randomIndex;
+            // 연속으로 같은 문장이 나오지 않도록 처리
+            do {
+                randomIndex = Math.floor(Math.random() * cheerMessages.length);
+            } while (randomIndex === lastCheerIndex && cheerMessages.length > 1);
+            
+            lastCheerIndex = randomIndex;
+            cheerCount++;
+            cheerCountSpan.textContent = cheerCount;
+
+            // 팝 애니메이션 효과
+            cheerDisplay.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                cheerDisplay.textContent = cheerMessages[randomIndex];
+                cheerDisplay.style.transform = 'scale(1)';
+            }, 80);
+
+            playCoinSound();
+            addScore(30);
+            createConfetti(15);
+        });
+
+        /* =========================================
+           8. 마우스 / 터치 따라다니는 반짝이 효과
+           ========================================= */
+        const sparkleIcons = ['✨', '⭐', '💫', '🔸', '💛', '👾'];
+        let lastSparkleTime = 0;
+
+        function spawnSparkle(x, y) {
+            const now = Date.now();
+            // 너무 과도하게 생성되지 않도록 45ms 간격 제한
+            if (now - lastSparkleTime < 45) return;
+            lastSparkleTime = now;
+
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle-particle';
+            sparkle.textContent = sparkleIcons[Math.floor(Math.random() * sparkleIcons.length)];
+            
+            // 약간의 랜덤 오프셋 추가
+            const offsetX = (Math.random() - 0.5) * 16;
+            const offsetY = (Math.random() - 0.5) * 16;
+            sparkle.style.left = `${x + offsetX}px`;
+            sparkle.style.top = `${y + offsetY}px`;
+
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 800);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            spawnSparkle(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches[0]) {
+                spawnSparkle(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        /* =========================================
+           9. 축하 폭죽(Confetti) 파티클 효과 함수
+           ========================================= */
+        function createConfetti(amount) {
+            const colors = ['#ff2a85', '#00f0ff', '#ffe600', '#00ff66', '#ffffff'];
+            
+            for (let i = 0; i < amount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
+                const startY = window.innerHeight / 2;
+                
+                confetti.style.left = `${startX}px`;
+                confetti.style.top = `${startY}px`;
+                document.body.appendChild(confetti);
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 4 + Math.random() * 8;
+                let vx = Math.cos(angle) * velocity;
+                let vy = Math.sin(angle) * velocity - 4;
+                let posX = startX;
+                let posY = startY;
+                let opacity = 1;
+
+                function animateConfetti() {
+                    posX += vx;
+                    posY += vy;
+                    vy += 0.35; // 중력 가속도
+                    opacity -= 0.025;
+
+                    confetti.style.left = `${posX}px`;
+                    confetti.style.top = `${posY}px`;
+                    confetti.style.opacity = opacity;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animateConfetti);
+                    } else {
+                        confetti.remove();
+                    }
+                }
+                requestAnimationFrame(animateConfetti);
+            }
+        }
+    </script>
+</body>
+</html>
